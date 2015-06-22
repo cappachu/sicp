@@ -255,15 +255,85 @@ linear iterative process - captured by state variables
 (+ 0 9)
 9
 
-1.2.2 Tree Recursion pg 37
+1.2.2 Tree Recursion pg 37 (as opposed to Linear Recursive Process)
 --------------------------
 
+Tree Recursive Process
+- STEPS required O(No. nodes in Tree) exponential O(Fib(n))
+- SPACE required O(max depth of Tree) 
 
 
----- pg 36 -----
+Terribly inefficient Fib
+- number of steps grows exponentially 
+- fib 1 and fib 0 are called fib(n+1) times (exponential)
+- space grows linearly 
+
+
+(define (fib n)
+  (cond ((= n 1) 1)
+        ((= n 0) 0)
+        (else (+ (fib (- n 1))
+                 (fib (- n 2))))))
+
+fib calls itself twice each time it is invoked - this causes the process to evolve like a tree.                 
+
+; Iterative Fib
+; steps required is linear MUCH MUCH LESS than tree recursive version even for small inputs
+
+updating state variables
+a <-- a + b
+b <-- a
+
+(define (fib-3 n)
+  (define (fib-iter a b count)
+    (if (= count 0)
+        b
+        (fib-iter (+ a b) a (- count 1))))
+  (fib-iter 1 0 n))
+
+Tree Recursive Processes are not useless however - they are a natural and powerful tool when operating on hierarchical structured data (the interpreter itself evaluates expressions using a tree-recursive process).
+
+Example: Counting Change pg 40
+------------------------------
+REVIEW
+
+Exercise 1.11 (REVIEW)
+-------------
+; Exercise 1.11
+
+; recursive
+(define (f n)
+  (if (< n 3)
+      n
+      (+ (f (- n 1))
+         (* 2 (f (- n 2)))
+         (* 3 (f (- n 3))))))
+
+; iterative 
+(define (f-2 n)
+  (define (f-iter a b c count)
+    (if (= count 2)
+        a
+        (f-iter (+ a (* 2 b) (* 3 c))
+                a
+                b
+                (dec count))))
+  (f-iter 2 1 0 n))
+
+
+1.2.3 Orders of Growth pg 42
+----------------------------
 
 
 
+
+
+
+
+
+
+
+---- pg 42 -----
 
 
 

@@ -79,6 +79,62 @@
         (fact-iter (+ count 1) (* product count))))
   (fact-iter 1 1))
 
+; 1.2.2
+(define (fib n)
+  (cond ((= n 1) 1)
+        ((= n 0) 0)
+        (else (+ (fib (- n 1))
+                 (fib (- n 2))))))
+
+; iterative fib
+(define (fib-2 n)
+  (define (fib-iter a b count)
+    (if (= count n)
+        b
+        (fib-iter b (+ a b) (+ count 1))))
+  (fib-iter 0 1 1))
+
+(define (fib-3 n)
+  (define (fib-iter a b count)
+    (if (= count 0)
+        b
+        (fib-iter (+ a b) a (- count 1))))
+  (fib-iter 1 0 n))
+
+
+; Exercise 1.11
+; recursive
+(define (f n)
+  (if (< n 3)
+      n
+      (+ (f (- n 1))
+         (* 2 (f (- n 2)))
+         (* 3 (f (- n 3))))))
+
+; iterative 
+(define (f-2 n)
+  (define (f-iter a b c count)
+    (if (= count 2)
+        a
+        (f-iter (+ a (* 2 b) (* 3 c))
+                a
+                b
+                (dec count))))
+  (f-iter 2 1 0 n))
+
+
+
+
+
+
+
+
+
+
+
+        
+
+         
 
 
 

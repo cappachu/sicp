@@ -1,0 +1,284 @@
+
+#lang planet neil/sicp
+
+1.1.3 Evaluating Combinations - pg 9
+------------------------------------
+Evaluating Combinations - recursive
+percolate values upwards: tree accumulation
+
+Environment: context in which evaluation takes place
+
+define is not a combination, it's a special form which has its own evaluation rule
+
+1.1.4 Compound Procedures - pg 11
+---------------------------------
+???
+parameters: names used within body of procedure
+operands: the things being operated on 
+arguments: values of operands
+
+(define (<name> <formal parameters>) <body>)
+
+1.1.5 Substitution Model for Procedure Application - pg 13
+----------------------------------------------------------
+
+- evaluate elements of combination and applies procedure (value of operator) to the arguments (values of oeprands).
+
+- compound procedure: evaluate body of procedure with formal parameters replaced by corresponding arguments.
+
+substitution model example:
+1) (square 5)
+2) body of square:
+   (* x x)
+3) replace formal parameter x with argument 5
+   (* 5 5)
+
+- substitution model - is a thinking model not how the interpreter actually works ("substitution" is actually accomplished by using a local environment for the formal parameters)
+
+- substitution model (an incomplete model) will be replaced by more refined models later
+
+Applicative order versus normal order pg 15
+-------------------------------------------
+
+- NORMAL ORDER EVALUTION: fully expand (till you reach only primitives) and then reduce (evaluate operands until their values are needed)
+
+- APPLICATIVE ORDER EVALUATION: evaluate arguments then apply (interpreter actually uses this, which avoids multiple evaluations of the same expressions - example provided in this section, and becauses its easier to deal with procedures that can not be modelled by substitution)
+
+- for procedures that can be modelled using substitution (chapters 1 and 2) and yield legitimate values normal-order and applicative-order produces the same values (see exercise 1.5 for illegitimate value example that does not produce the same result)
+
+1.1.6 Conditional Expressions and Predicates pg 17
+--------------------------------------------------
+
+cond for case analysis (CONDitional)
+clauses (<pn> <en>) consist of predicates and consequent expressions
+
+(cond (<p1> <e1>)
+	  (<p2> <e2>)
+	  .
+	  .
+	  (<pn> <en>))
+
+returns the consquent expression <e> corresponding to the first true predicate <p>
+if none of the <p>'s evaluate to true the cond is undefined
+
+"else" just evaluates to true or #t - could use anything that evaluates to true
+
+(if <predicate> <consequent> <alternate>)
+
+"and" and "or" are special forms since all subexpressions are not always evaluated.
+
+A difference between "if" and "cond" is that the <e>'s in the cond can be a sequance of expressions
+
+example:
+(cond (#t (display 'hi) (display 'thre') 4)
+	  (#f 6))
+
+(cond (#t (display 'hi) 4 3)
+        (#f 2))
+
+Logical Operators:
+"and" and "or" are special forms since not all subexpressions are evaluated
+
+; sum of square of the larger two numbers
+(define (larger x y)
+    (if (> x y) x y))
+
+(define (sum-square-larger-pair x y z)
+  (if (= x (larger x y))
+      (sum-of-squares x (larger y z))
+      (sum-of-squares y (larger x z))))
+
+
+
+1.1.7 Example: Square Roots by Newton's Method pg 21
+----------------------------------------------------
+
+Declarative (what is) VS Imperative (how to)
+
+Square roots with Newton's method (the general technique) 
+or Heron of Alexandria 1st Century A.D.
+
+
+; NOTE: 
+; - recursive call to sqrt-iter with improved guess
+; - we can write any purely numerical program using just procedure calls (without any iterative looping constructs!)
+
+(define (sqrt-iter guess x)
+  (if (good-enough? guess x)
+      guess
+      (sqrt-iter (improve guess x) x)))
+
+; NOTE: good-enough? is not effective for finding square roots of very small or very large numbers because of limited precision arithmetic on most computers. A better way might be to watch how guess changes through each iteration as a proportion of the itself. (delta guess / guess)
+(define (good-enough? guess x)
+  (< (abs (- (square guess) x)) 0.0001))
+
+(define (improve guess x)
+  (avg guess (/ x guess))) 
+
+(define (avg x y)
+  (/ (+ x y) 2))
+
+; NOTE: mixed operations on decimals and rationals yield decimals. 
+(define (sqrt x)
+    (sqrt-iter 1.0 x))
+
+
+1.1.8 Procedures as Black Box Abstractions pg 26
+------------------------------------------------
+
+Local names pg 27
+-----------------
+The meaning of a procedure should be independent of the parameter names used by its author, i.e. the following two procedures should be indistinguishable:
+
+(define (square x) (* x x))
+
+(define (sqyare y) (* y y))
+
+A procedure binds its formal parameters, these are called bound variables. An unbound variable is "free".
+
+scope: the set of expressions for which a binding defines a name.
+
+(define (good-enough? guess x)
+  (< (abs (- (square guess) x)) 0.001))
+
+In the definition above guess and x are bound but <, -, abs, square are free. The definition of good-enough? is independent of its bound variables and not independent of its free variables.
+
+Internal definitions and block structure pg 30
+----------------------------------------------
+
+NOTE: nesting definitions is one solution to the name-packaging problem (so names of sub procedures do not pollute the name space)
+
+;; Block-structured
+(define (sqrt x)
+  (define (good-enough? guess x)
+    (< (abs (- (square guess) x)) 0.001))
+  (define (improve guess x)
+    (average guess (/ x guess)))
+  (define (sqrt-iter guess x)
+    (if (good-enough? guess x)
+        guess
+        (sqrt-iter (improve guess x) x)))
+  (sqrt-iter 1.0 x))
+
+
+NOTE: But we can go further by allowing x to be a free variable in the internal definitions. This is called LEXICAL SCOPING: free variabls in a procedure refer to bindings made by enclosing procedure definitions; that is they are looked up in the environment in which the procedure was defined.
+
+;; Taking advantage of lexical scoping
+(define (sqrt x)
+  (define (good-enough? guess)
+    (< (abs (- (square guess) x)) 0.001))
+  (define (improve guess)
+    (average guess (/ x guess)))
+  (define (sqrt-iter guess)
+    (if (good-enough? guess)
+        guess
+        (sqrt-iter (improve guess))))
+  (sqrt-iter 1.0))
+
+
+1.2 Procedures and the Processes they Generate pg 31
+----------------------------------------------------
+
+Linear Recursion and Iteration
+------------------------------
+;; Recursive
+
+NOTE:
+- recursive procedure
+- recursive process
+
+(define (factorial n)
+  (if (= n 1)
+      1
+      (* n (factorial (- n 1)))))
+
+
+;; Iterative 
+
+NOTE: 
+- recursive procedure
+- iterative process 
+
+(define (factorial n)
+  (fact-iter 1 1 n))
+
+(define (fact-iter product counter max-count)
+  (if (> counter max-count)
+      product
+      (fact-iter (* counter product)
+                 (+ counter 1)
+                 max-count)))
+
+;; Iterative, block-structured (from footnote)
+
+(define (factorial n)
+  (define (iter product counter)
+    (if (> counter n)
+        product
+        (iter (* counter product)
+              (+ counter 1))))
+  (iter 1 1))
+
+
+LINEAR RECURSIVE PROCESS: expand then contract deferred operations. The interpreter keeps track of operations to be performed. The length of the chain of DEFERRED OPERATIONS and hence the INFORMATION requred to be kept GROWS LINEARLY. (see shape diagram on pg 34)
+
+LINEAR ITERATIVE PROCESS: iterative processes are those that can be modeled by STATE VARIABLES and RULES of how to update the state variables. NO. OF STEPS GROWS LINEARLY.
+- program variables provide complete description of process state (easy to resume, not so with recursive)
+
+NOTE: distinction between recursive PROCESS (how the process evolves) and recursive PROCEDURE (syntactically refers to itself directly or indirectly) .
+
+TAIL RECURSIVE: tail recursive implementations of interpreters are capable of using constant memory space for iterative processes even if they are defined by recursive procedures. (Most implementations of C, C++ are incapable of this, they instead use special looping constructs like do, repeat, until, for, and while to describe iterative processes).
+
+* footnote on pg 36 points to a paper on tail recursion by Carl Hewitt (1977) as inspiration for Scheme's tail recursion
+
+Exercise 1.9 pg 36
+------------------
+linear recursive process - deferred operations
+
+(+ 4 5)
+(inc (+ 3 5))
+(inc (inc (+ 2 5)))
+(inc (inc (inc (+ 1 5))))
+(inc (inc (inc (inc (+ 0 5)))))
+(inc (inc (inc (inc 5))))
+(inc (inc (inc 6)))
+(inc (inc 7))
+(inc 8)
+9
+
+linear iterative process - captured by state variables
+
+(+ 4 5)
+(+ 3 6)
+(+ 2 7)
+(+ 1 8)
+(+ 0 9)
+9
+
+1.2.2 Tree Recursion pg 37
+--------------------------
+
+
+
+---- pg 36 -----
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

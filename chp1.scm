@@ -114,16 +114,35 @@
 ; iterative 
 (define (f-2 n)
   (define (f-iter a b c count)
-    (if (= count 2)
-        a
-        (f-iter (+ a (* 2 b) (* 3 c))
-                a
-                b
-                (dec count))))
+    (cond ((< n 3) n)
+          ((= count 2) a)
+          (else (f-iter (+ a (* 2 b) (* 3 c))
+                        a
+                        b
+                        (dec count)))))
   (f-iter 2 1 0 n))
 
+; 1.12
+;
+;     1
+;    1 1
+;   1 2 1
+;  1 3 3 1
+; 1 4 6 4 1
+;
+; indices are 1-based
+(define (pascal-element row col)
+  (cond ((and (= row 1) (= col 1)) 1)
+        ((or (< col 1) (> col row)) 0)
+        (else (+ (pascal-element (dec row) (dec col))
+                 (pascal-element (dec row) col)))))
 
 
+
+                           
+                            
+    
+  
 
 
 

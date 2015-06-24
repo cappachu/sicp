@@ -258,15 +258,16 @@ linear iterative process - captured by state variables
 1.2.2 Tree Recursion pg 37 (as opposed to Linear Recursive Process)
 --------------------------
 
-Tree Recursive Process
-- STEPS required O(No. nodes in Tree) exponential O(Fib(n))
-- SPACE required O(max depth of Tree) 
-
+Tree Recursive Process in General:
+- STEPS required 0(No. nodes in Tree) 
+- SPACE required 0(max depth of Tree) 
 
 Terribly inefficient Fib
 - number of steps grows exponentially 
+- exponential O(Fib(n)) or O(phi^n)
 - fib 1 and fib 0 are called fib(n+1) times (exponential)
-- space grows linearly 
+- space grows linearly O(n) 
+REVIEW how is n the max depth of the tree?
 
 
 (define (fib n)
@@ -341,12 +342,40 @@ Exercise 1.11 (REVIEW)
 1.2.3 Orders of Growth pg 42
 ----------------------------
 
+Gross measure resources (R) required
 
+R(n) has order of growth 0(f(n))
+R(n) = 0(f(n)) - theta of f(n)
 
+k1 f(n) <= R(n) <= k2 f(n) [for sufficiently large n]
 
+It's a crude measure, for instance a process requiring n^2 steps and one requiring 1000n^2 steps and one requiring 3n^2 + 10n + 17 steps all have order of growth 0(n^2)
 
+But it does provide an indication of how the resource usage changes as we change the size of the problem.
 
+linear 0(n): 
+double n -> double resources 
+n -> 2n
+r -> 2r
 
+exponential 0(c^n):
+n -> n + 1
+r -> K * r
+
+logarithmic 0(log(n)):
+n -> 2n         
+r -> K + r  (log2k = log2 + logk)
+
+; Exercise 1.14
+REVIEW
+
+; Exercise 1.15
+; a. 5 times, since 12.15/3^5 < 0.1
+; b. steps -> 0(log(a))
+;    space -> 0(log(a))
+
+1.2.4 Exponentiation pg 44
+--------------------------
 
 
 

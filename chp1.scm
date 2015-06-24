@@ -122,7 +122,7 @@
                         (dec count)))))
   (f-iter 2 1 0 n))
 
-; 1.12
+; 1.12 Pascal's Triangle
 ;
 ;     1
 ;    1 1
@@ -137,8 +137,66 @@
         (else (+ (pascal-element (dec row) (dec col))
                  (pascal-element (dec row) col)))))
 
+; should bind col to 0
+(define (pascal-iter-row row col)
+  (cond ((< row col) 0) ; todo
+        ((= row col) (display (pascal-element row col)))
+        (else (display (pascal-element row col))
+              (display #\space) ; todo
+              (pascal-iter-row row (inc col)))))
+
+(define (pascal-triangle depth)
+  (define (pascal-iter-triangle current-depth)
+    (cond ((= current-depth depth) (pascal-iter-row current-depth 1))
+          (else (pascal-iter-row current-depth 1)
+                (newline)
+                (pascal-iter-triangle (inc current-depth)))))
+  (pascal-iter-triangle 0))
 
 
+; Exercise 1.14
+; REVIEW
+
+; Exercise 1.15
+; a. 5 times, since 12.15/3^5 < 0.1
+; b. steps -> 0(log(a))
+;    space -> 0(log(a))
+
+; 1.2.4 Exponentiation
+; 0(n) steps
+; 0(1) space
+(define (expt b n)
+  (define (expt-iter count product)
+    (if (= count 0)
+        product
+        (expt-iter (dec count) (* b product))))
+  (expt-iter n 1))
+
+(define (even? n)
+  (= 0 (remainder n 2)))
+   
+(define (fast-expt b n)
+  (cond ((= n 0) 1)
+        ((even? n) (square (fast-expt b (/ n 2))))
+        (else (* b (fast-expt b (- n 1))))))
+
+
+
+
+
+
+
+
+
+
+
+
+                
+
+
+                       
+           
+  
                            
                             
     

@@ -377,9 +377,56 @@ REVIEW
 1.2.4 Exponentiation pg 44
 --------------------------
 
+; Exercise 1.19 pg 47
+; a'  = bq + aq + ap
+; b'  = bp + aq
+; a'' = b'q + a'q + a'p
+; b'' = b'p + a'q
+;
+; a'' = (bp + aq)q +
+;       (bq + aq + ap)q +
+;       (bq + aq + ap)p
+;     = bpq + aq2 +
+;       bq2 + aq2 + apq +
+;       bqp + aqp + ap2
+;     = b(2pq + q2) + 
+;       a(2pq + q2) +
+;       a(p2  + q2)
+;       (which is of the required form)
+;
+; b'' = (bp + aq)p + 
+;       (ba + aq + ap)q
+;     = bp2 + aqp +
+;       bq2 + aq2 + apq
+;     = b(p2 + q2) +
+;       a(2pq + q2)
+;       (which is of the required form)
+; 
+; so,    p' = p2 + q2
+; and    q' = 2pq + q2
+;
+; Computing Fibonacci numbers in log(n) steps
+; using successive squaring of Transformation Tpq
+; read pg 47
+(define (fib-log n)
+  (fib-log-iter 1 0 0 1 n))
+
+(define (fib-log-iter a b p q count)
+  (cond ((= count 0) b)
+        ((even? count)
+         (fib-log-iter a
+                       b
+                       (sum-of-squares p q)
+                       (+ (* 2 p q) (square q))
+                       (/ count 2)))
+        (else (fib-log-iter (+ (* b q) (* a q) (* a p))
+                            (+ (* b p) (* a q))
+                            p
+                            q
+                            (- count 1)))))
 
 
----- pg 42 -----
+---- pg 47 -----
 
 
 

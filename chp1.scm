@@ -219,14 +219,100 @@
         ((even? count)
          (fib-log-iter a
                        b
-                       (sum-of-squares p q)
-                       (+ (* 2 p q) (square q))
+                       (+ (* p p) (* q q))
+                       (+ (* 2 p q) (* q q))
                        (/ count 2)))
         (else (fib-log-iter (+ (* b q) (* a q) (* a p))
                             (+ (* b p) (* a q))
                             p
                             q
                             (- count 1)))))
+
+; Euclid's Algorithm for GCD - oldest 'algorithm'
+; 0(log(n))
+(define (gcd a b)
+    (if (= b 0) 
+        a
+        (gcd b (remainder a b))))
+
+; Exercise 1.20 pg 49
+; normal order: certainly more than 4
+;(gcd 206 40)
+;(if (= 40 0) )
+;(gcd 40 (reminder 206 40))
+;(if (= (remainder 206 50) 0) )
+;(if (= 6 0))
+;(gcd (remainder 206 40) (reaminder 40 (remainder 206 40))
+;.
+;.
+;.
+
+; applicative order: 4 calls to remainder
+;(gcd 206 40)
+;(gcd 40 (remainder 206 40)) 
+;(gcd 40 6) 
+;(gcd 6 (remainder 40 6)) 
+;(gcd 6 4) 
+;(gcd 4 (remainder 6 4)) 
+;(gcd 4 2) 
+;(gcd 2 (remainder 4 2)) 
+;(gcd 2 0) 
+
+
+;;;SECTION 1.2.6
+
+;; prime?
+
+(define (smallest-divisor n)
+  (find-divisor n 2))
+
+(define (find-divisor n test-divisor)
+  ; NOTES:
+  ; if n is not prime it must have a divisor <= sqrt(n)
+  ; because if d is a divisor of n, then so is n/d.
+  ; but d and n/d cannot both be greater than n
+  (cond ((> (square test-divisor) n) n)
+        ((divides? test-divisor n) test-divisor)
+        (else (find-divisor n (+ test-divisor 1)))))
+
+(define (divides? a b)
+  (= (remainder b a) 0))
+
+(define (prime? n)
+  (= n (smallest-divisor n)))
+
+
+; The Fermat test (probabilistic primality algorithm)
+; compute exponential of a number modulo another
+; uses successive squaring idea used in fast-expt in 
+; section 1.2.4 so num steps are order log(n)
+;     
+(define (expmod base exp m)
+  (cond ((= exp 0) 1) ; anything to the power 0 is 1
+        ((even? exp)
+         (remainder (square (expmod base (/ exp 2) m))
+                    m))
+        (else
+         (remainder (* base (expmod base (- exp 1) m))
+                    m))))        
+
+(define (fermat-test n)
+  (define (try-it a)
+    (= (expmod a n n) a))
+  (try-it (+ 1 (random (- n 1)))))
+
+(define (fast-prime? n times)
+  (cond ((= times 0) true)
+        ((fermat-test n) (fast-prime? n (- times 1)))
+        (else false)))
+
+
+; Exercise 1.22 pg 54
+
+
+
+
+
 
 
 

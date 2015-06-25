@@ -447,6 +447,16 @@
 ; actual value of integral between 0 and 1 is 1/4
 
 
+;Exercise 1.30 pg 60
+
+(define (sum-iter term a next b)
+  (define (iter a result)
+    (if (> a b)
+        result
+        (iter (next a) (+ (term a) result))))
+  (iter a 0))
+
+  
 
 
   

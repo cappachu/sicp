@@ -566,6 +566,59 @@ NOTE: We can make the probability of error AS SMALL AS WE LIKE. Algorithms for w
 ; As n grows larger the steps correspond closer to the
 ; 0(sqrt(n)) order of growth, 35 * sqrt(10) -= 97
 
+; Exercise 1.24 pg 55
+
+; redefine timed prime test to use fast-prime? procedure
+
+
+(define (search-for-primes-fast start end)
+  (define (timed-fast-prime-test n)
+    (newline)
+    (display n)
+    (start-prime-test n (runtime)))
+
+  (define (start-prime-test n start-time)
+    (if (prime? n)
+        (report-prime (- (runtime) start-time))))
+
+  (define (report-prime elapsed-time)
+    (display " *** ")
+    (display elapsed-time))
+  
+  (cond ((> start end) (newline) 
+                       (display "search complete"))
+        ((odd? start)(timed-fast-prime-test start)
+                     (search-for-primes-fast (+ start 2) end))
+        (else (search-for-primes-fast (+ start 1) end))))
+
+; These take twice as long if run independantly rather
+; than within the search-for-primes
+;(timed-prime-test 1009)
+;(timed-fast-prime-test 1009)
+
+;(search-for-primes-fast 1000 1020)
+;1009 *** 7
+;1013 *** 7
+;1019 *** 6
+;
+;
+;(search-for-primes-fast 10000 10040)
+;10007 *** 14
+;10009 *** 14
+;10037 *** 14
+;
+;(search-for-primes-fast 100000 100050)
+;100003 *** 33
+;100019 *** 33
+;100043 *** 33
+;
+;(search-for-primes-fast 1000000 1000040)
+;1000003 *** 97
+;1000033 *** 97
+;1000037 *** 97
+;
+; Perhaps we have to use much larger numbers to see a difference
+; in computation time between prime? and fast-prime?
 
 
 

@@ -447,7 +447,7 @@
 ; actual value of integral between 0 and 1 is 1/4
 
 
-;Exercise 1.30 pg 60
+; Exercise 1.30 pg 60
 
 (define (sum-iter term a next b)
   (define (iter a result)
@@ -456,8 +456,40 @@
         (iter (next a) (+ (term a) result))))
   (iter a 0))
 
+; Exercise 1.31 pg 60
+
+; generates linear recursive process
+(define (product term a next b)
+  (if (> a b)
+      1
+      (* (term a)
+         (product term (next a) next b))))
+
+; generates linear iterative process
+(define (product-iter term a next b)
+  (define (iter a result)
+    (if (> a b)
+        result
+        (iter (next a) (* (term a) result))))
+  (iter a 1))
+
+(define (factorial-product n)
+  (product-iter identity 1 inc n))
+
+(define (approx-pi-product)
+  (define (pi-term n)
+    (if (even? n)
+        (/ (+ n 2) (+ n 1))
+        (/ (+ n 1) (+ n 2))))
+  (* 4.0 (product-iter pi-term 1 inc 1000)))
+
+
+
   
 
+
+
+         
 
   
   

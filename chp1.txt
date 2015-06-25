@@ -709,7 +709,7 @@ High Order Procedures : procedures that manipulate procedures.
   (* 4.0 (product-iter pi-term 1 inc 1000)))  
 
 
----- pg 60 -----
+---- pg 61 -----
 
 
 

@@ -620,8 +620,8 @@ NOTE: We can make the probability of error AS SMALL AS WE LIKE. Algorithms for w
 ; Perhaps we have to use much larger numbers to see a difference
 ; in computation time between prime? and fast-prime?
 
-
-
+Exercise 1.26 pg 55
+Using the substitution model and applicative order evaluation Louis expmod procedure does not cull any multiplications. The correct procedure calls square on the result of expmod which avoids repeating the computations in expmod. Louis procedure creates a tree recursive process - the steps are on the order of 0(num nodes in tree) which grows exponentially with with the depth of the tree = log(n). e^logn = n. so it turns into a procedure that takes on the order of 0(n) steps.
 
 
 

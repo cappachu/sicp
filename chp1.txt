@@ -621,15 +621,59 @@ NOTE: We can make the probability of error AS SMALL AS WE LIKE. Algorithms for w
 ; in computation time between prime? and fast-prime?
 
 Exercise 1.26 pg 55
+-------------------
 Using the substitution model and applicative order evaluation Louis expmod procedure does not cull any multiplications. The correct procedure calls square on the result of expmod which avoids repeating the computations in expmod. Louis procedure creates a tree recursive process - the steps are on the order of 0(num nodes in tree) which grows exponentially with with the depth of the tree = log(n). e^logn = n. so it turns into a procedure that takes on the order of 0(n) steps.
 
+1.3 Formulating Abstractions with Higher-Order Procedures pg 56
+---------------------------------------------------------------
+High Order Procedures : procedures that manipulate procedures.
+
+1.3.1 Procedures as Arguments pg 57
+-----------------------------------
+
+; 1.3.1 Procedures as Arguments pg 57
+; term : procedure that computes a term to be added
+; next : procedure that computes the next value of a
+(define (sum term a next b)
+  (if (> a b)
+      0
+      (+ (term a) 
+         (sum term (next a) next b))))
+
+(define (cube x) (* x x x))
+
+(define (sum-cubes a b)
+  (sum cube a inc b))
+
+(define (identity x) x)
+
+(define (sum-integers a b)
+  (sum identity a inc b))
+
+(define (pi-sum a b)
+  (define (pi-term x)
+    (/ 1.0 (* x (+ x 2))))
+  (define (pi-next x)
+    (+ x 4))
+  (sum pi-term a pi-next b))
+
+(define (approx-pi)
+  (* 8 (pi-sum 1 1000)))
+
+(define (integral f a b dx)
+  (define (add-dx x) (+ x dx))
+  (* (sum f (+ a (/ dx 2.0)) add-dx b)
+     dx))
+
+;(integral cube 0 1 0.01)
+; 0.24998750000000042
+;(integral cube 0 1 0.001)
+; 0.249999875000001
+; actual value of integral between 0 and 1 is 1/4
 
 
 
-
-
-
----- pg 54 -----
+---- pg 56 -----
 
 
 

@@ -20,8 +20,8 @@
 
 
 
-(/ (+ 5 4 (- 2 (- 3 (+ 6 (/ 4 5)))))
-     (* 3 (- 6 2) (- 2 7)))
+;(/ (+ 5 4 (- 2 (- 3 (+ 6 (/ 4 5)))))
+;     (* 3 (- 6 2) (- 2 7)))
 
 (define (square x) (* x x))
 
@@ -309,11 +309,48 @@
 
 ; Exercise 1.22 pg 54
 
+(define (timed-prime-test n)
+  (newline)
+  (display n)
+  (start-prime-test n (runtime)))
 
+(define (start-prime-test n start-time)
+  (if (prime? n)
+      (report-prime (- (runtime) start-time))))
 
+(define (report-prime elapsed-time)
+  (display " *** ")
+  (display elapsed-time))
 
+(define (search-for-primes start end)
+  (cond ((> start end) (newline) 
+                       (display "search complete"))
+        ((odd? start)(timed-prime-test start)
+                     (search-for-primes (+ start 2) end))
+        (else (search-for-primes (+ start 1) end))))
 
-
+;(search-for-primes 1000 1020)
+;1009 *** 7
+;1013 *** 7
+;1019 *** 6
+;
+;(search-for-primes 10000 10040)
+;10007 *** 15
+;10009 *** 14
+;10037 *** 13
+;
+;(search-for-primes 100000 100050)
+;100003 *** 37
+;100019 *** 35
+;100043 *** 35
+;
+;(search-for-primes 1000000 1000040)
+;1000003 *** 106
+;1000033 *** 97
+;1000037 *** 97
+;
+; As n grows larger the steps correspond closer to the
+; 0(sqrt(n)) order of growth, 35 * sqrt(10) -= 97
 
 
 

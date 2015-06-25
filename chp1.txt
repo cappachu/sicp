@@ -490,6 +490,8 @@ The Fermat test pg 51
 ---------------------
 A PROBABILISTIC Algorithm for primality testing based on Fermat's Little Theorem.
 
+Fermat's Little Theorem: if n is prime then a^n congruent to a modulo n (for a < n). (i.e. a^n mod n = a)
+
 If n is not prime MOST numbers a < n will not satisfy fermats little theorem (pg 51). So we pick a random number a < n and compute the remainder a^n mod n if the result is not a then n is not prime, if it is a then it is LIKELY prime.
 
 ; The Fermat test (probabilistic primality algorithm)
@@ -520,6 +522,49 @@ If n is not prime MOST numbers a < n will not satisfy fermats little theorem (pg
 NOTE: We can make the probability of error AS SMALL AS WE LIKE. Algorithms for which we can prove the chance of error can be made ARBITRARILY small are called PROBABILISTIC ALGORITHMS.
 
 ; Exercise 1.22 pg 54
+
+(define (timed-prime-test n)
+  (newline)
+  (display n)
+  (start-prime-test n (runtime)))
+
+(define (start-prime-test n start-time)
+  (if (prime? n)
+      (report-prime (- (runtime) start-time))))
+
+(define (report-prime elapsed-time)
+  (display " *** ")
+  (display elapsed-time))
+
+(define (search-for-primes start end)
+  (cond ((> start end) (newline) 
+                       (display "search complete"))
+        ((odd? start)(timed-prime-test start)
+                     (search-for-primes (+ start 2) end))
+        (else (search-for-primes (+ start 1) end))))
+
+;(search-for-primes 1000 1020)
+;1009 *** 7
+;1013 *** 7
+;1019 *** 6
+;
+;(search-for-primes 10000 10040)
+;10007 *** 15
+;10009 *** 14
+;10037 *** 13
+;
+;(search-for-primes 100000 100050)
+;100003 *** 37
+;100019 *** 35
+;100043 *** 35
+;
+;(search-for-primes 1000000 1000040)
+;1000003 *** 106
+;1000033 *** 97
+;1000037 *** 97
+;
+; As n grows larger the steps correspond closer to the
+; 0(sqrt(n)) order of growth, 35 * sqrt(10) -= 97
 
 
 

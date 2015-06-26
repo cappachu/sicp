@@ -528,6 +528,33 @@
   (fixed-point (lambda (x) (+ 1 (/ 1 x)))
                1.0))
 
+; Exercise 1.36 pg 70
+
+(define (fixed-point-display f first-guess)
+  (define (close-enough? v1 v2)
+    (< (abs (- v1 v2)) tolerance))
+  (define (try guess count)
+    (display count)
+    (display " ")
+    (display guess)
+    (newline)
+    (let ((next (f guess)))
+      (if (close-enough? guess next)
+          next
+          (try next (inc count)))))
+  (try first-guess 1))
+
+; without average damping
+(fixed-point-display (lambda (x) (/ (log 1000) (log x)))
+                     1.1)
+; 4.555538934848503 in 37 steps
+
+; average damping
+(fixed-point-display (lambda (x) (avg x (/ (log 1000) (log x))))
+                     1.1)
+; 4.555536364911781 in 13 steps
+
+
 
 
 

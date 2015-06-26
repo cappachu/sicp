@@ -900,6 +900,8 @@ One way to locate a fixed point of a functions is to begin with an initial guess
   (try first-guess))
 
 
+Computing sqrt of x requires finding y such that y^2 = x. Converting the equation to an equivalent form y = x/y we see that we are looking for a fixed point of the function y|->x/y. i.e the fixed point x occurs when  x/y = y.
+
 The following procedure does not converge, creating an infinte loop, bouncing back and forth between two guesses:
 
 (define (sqrt-fp x)
@@ -964,8 +966,91 @@ Tis approach of averaging successsive approximations to a solution called AVERAG
 ; 4.555536364911781 in 13 steps
 
 
+1.3.4 Procedures as Returned Values pg 72
+-----------------------------------------
+
+(define (average-damp f)
+  (lambda (x) (avg x (f x))))
+
+The operator of the following combination is itself a combination:
+((average-damp square) 10)
+
+We can then redefine sqrt like so:
+(define (sqrt x)
+  (fixed-point (average-damp (lambda (y) (/ x y)))
+               1.0))
+
+contrast the procedure above with the sqrt procedure from section 1.1.7 pg 23:
+
+(define (sqrt-iter guess x)
+  (if (good-enough? guess x)
+      guess
+      (sqrt-iter (improve guess x)
+                 x)))
+
+(define (improve guess x)
+  (average guess (/ x guess)))
+
+(define (average x y)
+  (/ (+ x y) 2))
+
+(define (good-enough? guess x)
+  (< (abs (- (square guess) x)) 0.001))
+
+(define (sqrt x)
+  (sqrt-iter 1.0 x))
+
+Notice how the fixed point / average-damp / y|->x/y version makes explicit the 3 ideas which can be reused with ease despite the fact that they express the same process. 
+
+Reuse for cube roots (fixed point of y|->x/y^2):
+
+(define (cube-root x)
+  (fixed-point (average-damp (lambda (y) (/ x (square y))))
+               1.0))
 
 
+Newton's method pg 73
+---------------------
+Derivative of g (in the limt of small dx) is given by:
+
+Dg(x) = g(x+dx) - g(x)
+        --------------
+              dx
+
+so an approximation is given by:
+Note: procedure that returns a procedure
+
+(define (deriv g)
+  (lambda (x) 
+    (/ (- (g (+ x d x)) (g x))
+          dx)))
+
+(define dx 0.00001)
+
+to approximate the derivative of x|->x^3 for example:
+
+((deriv (cube x)) 5)
+
+We can express Newton's method as a fixed point process (see page 73 for corresponding forumla):
+
+(define (newton-transform g)
+  (lambda (x)
+    (- x (/ (g x) ((deriv g) x)))))
+
+(define (newtons-method g guess)
+  (fixed-point (newton-transform g) guess))
+
+newton-method takes as arguments a procedure creates a function that we want to find a zero of - and an initial guess.
+
+To find the sqrt we can use Newton's method to find the zer of the function y|->y^2 - x and an initial guess 1:
+
+(define sqrt x)
+  (newtons-method (lambda (y) (- (square y) x))
+                  1.0))
+
+
+Abstractions and first-class procedures pg 75
+---------------------------------------------
 
 
 

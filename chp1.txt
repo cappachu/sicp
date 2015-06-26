@@ -729,7 +729,133 @@ High Order Procedures : procedures that manipulate procedures.
 (define (product-accumulate term a next b)
   (accumulate-iter * 1 term a next b))
 
-  
+1.3.2 Constructing Procedures Using Lambda pg 62
+------------------------------------------------
+
+(lambda (<formal-parameters>) <body>)
+
+Just like define without the name. 
+
+(define (plus4 x) (+ x 4))
+
+Equivalent define would be:
+
+(define plus4 (lambda (x) (+ x 4)))
+
+(lambda          (x)                  (+ x 4))
+  |               |                    |
+("the procedure" ("of an argument x") ("that adds x and 4")
+
+Can use lambda direclty in a combination (just like any expression who's value is a procedure):
+
+((lambda (x y z) (+ x y (square z))) 1 2 3)
+
+or anywhere we would use a procedure name.
+
+NOTE: lambda could have been suitably called "make-procedure". The name lambda comes from the mathematical logician Alonzo Church's lambda calculus (1941) a means to study function and function application.
+
+
+Using let to create local variables pg 63  
+-----------------------------------------
+
+(define (f x y)
+  (define (f-helper a b)
+    (+ (* x (square a))
+       (* y b)
+       (* a b)))
+  (f-helper (+ 1 (* x y))
+            (- 1 y)))
+
+Using lambda instead of define to bind local variables:
+
+(define (f x y)
+  ((lambda (a b)
+     (+ (* x (square a))
+        (* y b)
+        (* a b)))
+   (+ 1 (* x y))
+   (- 1 y)))
+
+This is so useful that the special form let makes this more convenient:
+
+(define (f x y)
+  (let ((a (+ 1 (* x y)))
+        (b (- 1 y)))
+    (+ (* x (square a))
+       (* y b)
+       (* a b))))
+
+let is a special form built via lambda.
+
+(let ((<var1> <exp1>)
+      (<var2> <exp2>)
+      .
+      .
+      (<varn> <expn>))
+  <body>)
+
+read like so:
+
+let <var1> have the value <exp1> and
+    <var2> have the value <exp2> and 
+    .
+    .
+in <body>
+
+SYNTACTIC SUGAR for the lambda:
+
+((lambda (<var1> ... <varn>)
+    <body>)
+  <exp1>
+  .
+  .
+  .
+  <expn>)
+
+Let allows binding of variables as locally as possible.
+
+Note: the variable's values are computed outside the let. i.e. <exp1> will refer to a name outside the scope of the let. For example if x is 2, the following evaluates to 12:
+(let ((x 3)        --> x is 3
+      (y (+ x 2))) --> y is 4 (outer x + 2)      
+   (* x y))
+
+Use let instead of internal defines unless the internal defines bind procedures.
+
+; Exercise 1.34
+
+(define (f g)
+  (g 2))
+
+(f square) -> 4
+
+(f (lambda (z) (* z (+ z 1)))) -> 6
+
+Evaluating (f f):
+(f f)
+(f 2)
+(2 2) -> error 2 is not a procedure
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ---- pg 61 -----
 
 

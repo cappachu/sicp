@@ -623,21 +623,26 @@
 (define (repeated f n)
   (if (= n 1)
       f
-      (repeated (compose f f) (dec n))))
+      (compose f (repeated f (dec n)) f)))
+
 
 ;;((repeated square 2) 5)
       
 
 ;; Exercise 1.44
+(define dx 0.00001)
+
 (define (smooth f)
   (lambda (x) (avg
                (avg (f (- x dx))
                     (f x))
                (f (+ x dx)))))
 
-
 (define (n-fold-smooth f n)
   (repeat smooth n))
+
+
+
 
  
 

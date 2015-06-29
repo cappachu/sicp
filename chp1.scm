@@ -1,4 +1,5 @@
 #lang planet neil/sicp
+;; C-c C-a in REPL
 
 ;(define (square x) (* x x))
 
@@ -545,60 +546,99 @@
   (try first-guess 1))
 
 ; without average damping
-(fixed-point-display (lambda (x) (/ (log 1000) (log x)))
-                     1.1)
+;(fixed-point-display (lambda (x) (/ (log 1000) (log x)))
+;                     1.1)
 ; 4.555538934848503 in 37 steps
 
 ; average damping
-(fixed-point-display (lambda (x) (avg x (/ (log 1000) (log x))))
-                     1.1)
+;(fixed-point-display (lambda (x) (avg x (/ (log 1000) (log x))))
+;                     1.1)
 ; 4.555536364911781 in 13 steps
 
 
+;; Exercise 1.40
+(define (deriv g)
+  (lambda (x) 
+    (/ (- (g (+ x dx)) (g x))
+          dx)))
+
+(define dx 0.00001)
+
+(define (newton-transform g)
+  (lambda (x)
+    (- x (/ (g x) ((deriv g) x)))))
+
+(define (newtons-method g guess)
+  (fixed-point (newton-transform g) guess))
+
+(define (cubic a b c)
+  (lambda (x)
+    (+ (* x x x) (* a x x) (* b x) c)))
+
+;(newtons-method (cubic a b c) 1)
+
+;; Exercise 1.41
+
+(define (double f)
+  (lambda (x)
+    (f (f x))))
+
+;; (((double (double double)) inc) 5)
+;; should cal inc 2^4 or 16 times with argument 5
+;; result: 21
+
+;; (((double
+;;    (double double))
+;;   inc)
+;;  5)
+
+;; (((double
+;;    (lambda (x) (double (double x))))
+;;   inc)
+;;   5)
+
+;;  (((lambda (x) (double (double (double (double x)))))
+;;    inc)
+;;   5)
+
+;; ((double (double (double (double inc)))) 5)
+
+;; ((double (double (double (lambda (x) (inc (inc x)))))) 5)
+
+;; ((double (double (lambda (x) (inc (inc (inc (inc x))))))) 5)
+
+;; ((double (lambda (x) (inc (inc (inc (inc (inc (inc (inc (inc x)))))))))) 5)
+
+;; ((lambda (x) (inc (inc (inc (inc (inc (inc (inc (inc (inc (inc (inc (inc (inc (inc (inc (inc x))))))))))))))))) 5)
 
 
+;; Exercise 1.42
 
-          
+(define (compose f g)
+  (lambda (x) (f (g x))))
 
+;;((compose square inc) 6)
 
+;; Exercise 1.43
+(define (repeated f n)
+  (if (= n 1)
+      f
+      (repeated (compose f f) (dec n))))
 
+;;((repeated square 2) 5)
+      
 
-
-         
-
-  
-  
-    
-
-
-
-
-
-
-
-                
-
-
-                       
-           
-  
-                           
-                            
-    
-  
+;; Exercise 1.44
+(define (smooth f)
+  (lambda (x) (avg
+               (avg (f (- x dx))
+                    (f x))
+               (f (+ x dx)))))
 
 
+(define (n-fold-smooth f n)
+  (repeat smooth n))
 
-
-
-
-
-
-        
-
-         
-
-
-
+ 
 
 

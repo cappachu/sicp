@@ -1022,7 +1022,7 @@ Note: procedure that returns a procedure
 
 (define (deriv g)
   (lambda (x) 
-    (/ (- (g (+ x d x)) (g x))
+    (/ (- (g (+ x dx)) (g x))
           dx)))
 
 (define dx 0.00001)
@@ -1052,41 +1052,118 @@ To find the sqrt we can use Newton's method to find the zer of the function y|->
 Abstractions and first-class procedures pg 75
 ---------------------------------------------
 
+Generalizing finding a fixed point of a tranformed function:
+
+(define (fixed-point-of-transform g transform guess)
+  (fixed-point (tranform g) guess))
+
+We can now express sqrt as a fixed point of the average damped version of y|->x/y:
+
+(define (sqrt x)
+  (fixed-point-of-tranform (lambda (y) (/ x y))
+                           average-damp
+                           1.0))
+
+We can also express sqrt as a fixed point of the Newton transform of y|->y^2 - x:
+(define (sqrt x)
+  (fixed-point-of-tranform (lambda (y) (- (square y) x))
+                           newton-transform
+                           1.0)
 
 
 
+- be aware of underlying abstractions, to generalize and build on.
+- choose level of abstraction appropriate for the task
+- but think about them so they can be applied in new contexts
+- high order procedures allow us to think in terms of these abstractions allowing them to be used just like any other computational element.
+
+First Class: Elements of a programming language that have the fewest restrictions.
+
+First Class Elements may be:
+* named by variables
+* passed as arguments to procedures
+* returned as results of procedures
+* included in data structures
+
+;; Exercise 1.40
+(define (deriv g)
+  (lambda (x) 
+    (/ (- (g (+ x dx)) (g x))
+          dx)))
+
+(define dx 0.00001)
+
+(define (newton-transform g)
+  (lambda (x)
+    (- x (/ (g x) ((deriv g) x)))))
+
+(define (newtons-method g guess)
+  (fixed-point (newton-transform g) guess))
+
+(define (cubic a b c)
+  (lambda (x)
+    (+ (* x x x) (* a x x) (* b x) c)))
+
+;(newtons-method (cubic a b c) 1)
+
+;; Exercise 1.41
+
+(define (double f)
+  (lambda (x)
+    (f (f x))))
+
+;; (((double (double double)) inc) 5)
+;; should cal inc 2^4 or 16 times with argument 5
+;; result: 21
+
+;; (((double
+;;    (double double))
+;;   inc)
+;;  5)
+
+;; (((double
+;;    (lambda (x) (double (double x))))
+;;   inc)
+;;   5)
+
+;;  (((lambda (x) (double (double (double (double x)))))
+;;    inc)
+;;   5)
+
+;; ((double (double (double (double inc)))) 5)
+
+;; ((double (double (double (lambda (x) (inc (inc x)))))) 5)
+
+;; ((double (double (lambda (x) (inc (inc (inc (inc x))))))) 5)
+
+;; ((double (lambda (x) (inc (inc (inc (inc (inc (inc (inc (inc x)))))))))) 5)
+
+;; ((lambda (x) (inc (inc (inc (inc (inc (inc (inc (inc (inc (inc (inc (inc (inc (inc (inc (inc x))))))))))))))))) 5)
 
 
+;; Exercise 1.42
+
+(define (compose f g)
+  (lambda (x) (f (g x))))
+
+;;((compose square inc) 6)
+
+;; Exercise 1.43
+(define (repeated f n)
+  (if (= n 1)
+      f
+      (repeated (compose f f) (dec n))))
+
+;;((repeated square 2) 5)
+      
+
+;; Exercise 1.44
+(define (smooth f)
+  (lambda (x) (avg
+               (avg (f (- x dx))
+                    (f x))
+               (f (+ x dx)))))
 
 
-
-
-
-
-
-
-
-
-
-
-
-
----- pg 61 -----
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+(define (n-fold-smooth f n)
+  (repeat smooth n))

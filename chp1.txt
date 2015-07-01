@@ -1,5 +1,7 @@
 
-#lang planet neil/sicp
+
+Chapter 1: Building Abstractions with Procedures
+================================================
 
 1.1.3 Evaluating Combinations - pg 9
 ------------------------------------
@@ -1169,5 +1171,5 @@ First Class Elements may be:
                (f (+ x dx)))))
 
 (define (n-fold-smooth f n)
-  (repeat smooth n))
+  (repeated smooth n))
 

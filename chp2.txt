@@ -1,0 +1,135 @@
+
+Chapter 2: Building Abstractions with Data pg 79
+================================================
+
+Compound Data (as with Compound Procedures):
+
+- elevate the conceptual level at which we design programs
+- enhance the expressive power of the language
+- modularity
+- better model real world phenomena.
+- Data Abstraction: separate representation of data from how data is used/manipulated
+
+Closure (notion of): the glue for combining data objects should enable combining not only primitive data but other compound data  as well. We'll use no special "data" operations, only procedures to form compound data.
+
+Conventional Interfaces
+
+Symbolic Expressions: data whose elementary parts can be arbitrary symbols
+
+Generic Operations: handles different types of data
+
+Data Directed Programming: technique that allows individual data representations to be designed in isolation and then combined additively (i.e. without modification)
+
+2.1 Introduction to Data Abstraction pg 83
+------------------------------------------
+
+Data Abstraction: program makes no assumption about the data it operates on - they operate on ABSTRACT DATA. CONCRETE DATA representation is defined independent of the programs that use the data.
+
+SELECTORS (extractors) and CONSTRUCTORS implement the ABSTRACT data in terms of the CONCRETE representation.
+
+2.1.1 Example: Arithmetic Operations for Rational Numbers pg 83
+---------------------------------------------------------------
+
+WISHFUL THINKING: We can ASSUME that we have procedures numer, denom (selectors) and make-rat (constructor) and define relations using them.
+
+(define (add-rat x y)
+  (make-rat (+ (* (numer x) (denom y))
+               (* (numer y) (denom x)))
+            (* (denom x) (denom y))))
+
+(define (sub-rat x y)
+  (make-rat (- (* (numer x) (denom y))
+               (* (numer y) (denom x)))
+            (* (denom x) (denom y))))
+
+(define (mul-rat x y)
+  (make-rat (* (numer x) (numer y))
+            (* (denom x) (denom y))))
+
+(define (div-rat x y)
+  (make-rat (* (numer x) (denom y))
+            (* (denom x) (numer y))))
+
+(define (equal-rat? x y)
+  (= (* (numer x) (denom y))
+     (* (numer y) (denom x))))
+
+
+Pairs
+-----
+
+cons, car, cdr
+
+cons CONSTRUCTS a PAIR
+
+LIST-STRUCTURED data: data objects contructed from pairs.
+
+
+Representing rational numbers pg 80
+-----------------------------------
+
+(define (make-rat n d) (cons n d))
+
+(define (numer x) (car x))
+
+(define (denom x) (cdr x))
+
+
+(define (print-rat x)
+  (newline)
+  (display (numer x))
+  (display "/")
+  (display (denom x)))
+
+We can modify the make-rat procedure without changing the procedures that implement actual operations to reduce rational numbers to lowest terms.
+
+(define (make-rate n d)
+  (let ((g (gcd n d)))
+    (cons (/ n g) (/ d g))))
+
+
+NOTE: We could have defined make-rate, numer and denom like so:
+
+(define make-rat cons)
+
+which is more efficient but harder to debug, trace since all calls to cons will be watched rather than just calls to make-rat.
+
+;; Exercise 2.1
+;; The version of gcd I'm using produces a divisor that
+;; is the sign of n/d so the naive make-rat produces the
+;; signed rational number we desire.
+;; The following procedure should do the same irrespective
+;; of the sign of the divisor produced by any gcd procedure:
+(define (make-rat-signed n d) 
+  (let ((g (gcd n d)))
+    (let ((numer (/ n g))
+          (denom (/ d g)))
+      (let ((sign (if (< d 0) - +)))
+        (cons (sign numer) (sign denom))))))
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

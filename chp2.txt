@@ -214,6 +214,112 @@ Changing from one representation to another we wouldn't have to change procedure
 
 2.1.3 What is Meant by Data? pg 90
 ----------------------------------
+DATA: defined by a collection of SELECTORS, CONSTRUCTORS and conditions these procedures must fullfill to be a valid representation (ASSERTIONS).
+
+For example:
+make-rat, numer, and denom must satisfy the condition that, for any integer n and any non-zero integer d, if x is (make-rat n d), then:
+
+(numer x)    n
+--------- = ---
+(denom x)    d
+
+Note: Here we are relying on facts about integers (equality and division). ABSTRACT MODELS define new kinds of data objects in terms of previously defined types of data objects. Assertions can then be reduced to assertions about previously defined objects.
+
+Similarly for the notion of a pair the assertion that for any objects x and y, if z is (cons x y) then (car z) is x and (cdr z) is y. ANy triple of procedures that satisfies the condition can be used as the basis for implementing pairs. This is illustrated by an implementation of cons, car and cdr using PROCEDURES (without using data structures):
+
+Note: the procedure cons returns a procedure dispatch
+
+REVIEW !!! - closure?
+
+(define (cons x y)
+  (define (dispatch m)
+    (cond ((= m 0) x)
+          ((= m 1) y)
+          (else (error "Argument not 0 or 1 -- CONS" m))))
+  dispatch)
+
+(define (car z) (z 0))
+
+(define (cdr z) (z 1))
+
+The ability to manipulate procedures as objects automatically provides the ability to represent compound objects. This style of programming is called MESSAGE PASSING.
+
+;; Exercise 2.4 pg 92
+;; see Section 1.1.5 page 14 for Substitution Model
+;;
+;; REVIEW !!!
+;; commented out
+;;(define (cons x y)
+;;  (lambda (m) (m x y)))
+
+;;(define (car z)
+;;  (z (lambda (p q) p)))
+
+;;(define (cdr z)
+;;  (z (lambda (p q) q)))
+
+;; Verification using substitution model
+;; (car (cons x y))
+
+;; body of cons is
+;; (lambda (m) (m x y))
+
+;; replacing cons
+;; (car (lambda (m) (m x y)))
+
+;; body of car is
+;; (z (lambda (p q) p))
+
+;; replacing formal parameter z with body of cons
+;; ((lambda (m) (m x y)) (lambda (p q) p))
+
+;; body of first lambda
+;; (m x y)
+
+;; replacing formal paramter m body of first lambda with second lambda
+;; ((lambda (p q) p) x y)
+
+;; body of second lambda
+;; p
+
+;; replacing formal parameter p 
+;; x
+
+;; Exercise 2.5 pg 92
+
+;; a and b are non-negative integers (nni)
+(define (cons-nni a b)
+  (define (cons-iter product a b)
+    (cond ((= a b 0) product)
+          ((> a 0) (cons-iter (* 2 product) (dec a) b))
+          ((> b 0) (cons-iter (* 3 product) a (dec b)))
+          (else (error "a and b must be non-negative integers"))))
+  (cons-iter 1 a b))
+
+;; number of times base divides number resulting in an integer quotient
+(define (integer-log base number)
+  (define (iter count quot)
+    (if (= (remainder quot base) 0)
+        (iter (inc count) (/ quot base))
+        count))
+  (iter 0 number))
+
+(define (car-nni z)
+  (integer-log 2 z))
+
+(define (cdr-nni z)
+  (integer-log 3 z))
+
+;; (car-nni (cons-nni 3 4))
+;; (cdr-nni (cons-nni 3 4))
+
+
+
+
+
+
+
+
 
 
 

@@ -141,17 +141,88 @@
 ;;                                     (make-point 10 0))))
 
 
+;; Exercise 2.4 pg 92
+;; see Section 1.1.5 page 14 for Substitution Model
+;;
+;; REVIEW
+;; commented out
+;;(define (cons x y)
+;;  (lambda (m) (m x y)))
+
+;;(define (car z)
+;;  (z (lambda (p q) p)))
+
+;;(define (cdr z)
+;;  (z (lambda (p q) q)))
+
+;; Verification using Substitution Model
+;; (car (cons x y))
+
+;; body of cons is
+;; (lambda (m) (m x y))
+
+;; replacing cons
+;; (car (lambda (m) (m x y)))
+
+;; body of car is
+;; (z (lambda (p q) p))
+
+;; replacing formal parameter z with body of cons
+;; ((lambda (m) (m x y)) (lambda (p q) p))
+
+;; body of first lambda
+;; (m x y)
+
+;; replacing formal paramter m body of first lambda with second lambda
+;; ((lambda (p q) p) x y)
+
+;; body of second lambda
+;; p
+
+;; replacing formal parameter p 
+;; x
+
+
+;; Exercise 2.5 pg 92
+
+;; a and b are non-negative integers (nni)
+(define (cons-nni a b)
+  (define (cons-iter product a b)
+    (cond ((= a b 0) product)
+          ((> a 0) (cons-iter (* 2 product) (dec a) b))
+          ((> b 0) (cons-iter (* 3 product) a (dec b)))
+          (else (error "a and b must be non-negative integers"))))
+  (cons-iter 1 a b))
+
+;; number of times base divides number resulting in an integer quotient
+(define (integer-log base number)
+  (define (iter count quot)
+    (if (= (remainder quot base) 0)
+        (iter (inc count) (/ quot base))
+        count))
+  (iter 0 number))
+
+(define (car-nni z)
+  (integer-log 2 z))
+
+(define (cdr-nni z)
+  (integer-log 3 z))
+
+;; (car-nni (cons-nni 3 4))
+;; (cdr-nni (cons-nni 3 4))
+
+
+;; Exercise 2.6 pg 93
+;; Church Numerals
+
+(define zero (lambda (f) (lambda (x) x)))
+
+(define (add-1 n)
+  (lambda (f) (lambda (x) (f ((n f) x)))))
 
 
 
 
-
-
-
-
-
-
-        
 
 
 

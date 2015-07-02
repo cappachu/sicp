@@ -24,7 +24,7 @@ arguments: values of operands
 1.1.5 Substitution Model for Procedure Application - pg 13
 ----------------------------------------------------------
 
-- evaluate elements of combination and applies procedure (value of operator) to the arguments (values of oeprands).
+- evaluate elements of combination and applies procedure (value of operator) to the arguments (values of operands).
 
 - compound procedure: evaluate body of procedure with formal parameters replaced by corresponding arguments.
 
@@ -35,9 +35,12 @@ substitution model example:
 3) replace formal parameter x with argument 5
    (* 5 5)
 
+pg 14 goes through an example of this process.
+
 - substitution model - is a thinking model not how the interpreter actually works ("substitution" is actually accomplished by using a local environment for the formal parameters)
 
 - substitution model (an incomplete model) will be replaced by more refined models later
+
 
 Applicative order versus normal order pg 15
 -------------------------------------------
@@ -134,7 +137,7 @@ The meaning of a procedure should be independent of the parameter names used by 
 
 (define (square x) (* x x))
 
-(define (sqyare y) (* y y))
+(define (square y) (* y y))
 
 A procedure binds its formal parameters, these are called bound variables. An unbound variable is "free".
 

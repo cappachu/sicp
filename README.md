@@ -1,4 +1,7 @@
 # sicp
+The Structure and Interpretation of Computer Programs
+
+Solutions and fairly extensive notes as I worked through the wizard Book using Racket/Scheme.
 
 Chapter 1: Building Abstractions with Procedures
 Exercises:

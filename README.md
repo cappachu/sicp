@@ -25,6 +25,7 @@ Exercises:
 - 1.41
 - 1.42
 - 1.44
+
 Chapter 2: Building Abstractions with Data
 Exercises:
 - 2.1
